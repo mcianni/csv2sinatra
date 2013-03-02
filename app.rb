@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sinatra/base'
-#require 'sinatra/config_file'
 require 'data_mapper'
 require 'will_paginate'
 require 'will_paginate/data_mapper'

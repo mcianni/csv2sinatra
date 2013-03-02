@@ -3,7 +3,6 @@ require 'data_mapper'
 module DynamicClasses
 
   class Base
-    #include DataMapper::Resource
   end
 
   # Check if there's a table matching the requested const
