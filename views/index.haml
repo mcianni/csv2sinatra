@@ -1,0 +1,9 @@
+%h1 
+  Tables 
+  %small (generated from CSVs)
+
+%table.table.table-striped
+  - @records.each do |record|
+    %tr
+      %td
+        %a{ href: "/tables/#{record}" }= record

@@ -1,0 +1,15 @@
+%h1 Show
+
+= will_paginate(@rows)
+
+%table.table.table-striped
+  %tbody
+    %tr
+      - @columns.each do |col|
+        %th= col
+  - @rows.each do |row|
+    %tr
+      - row.attributes.each do |k, v|
+        %td= v
+
+= will_paginate(@rows)
