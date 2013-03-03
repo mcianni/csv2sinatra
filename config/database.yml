@@ -1,0 +1,5 @@
+development:
+  database: csv2sinatra
+
+test:
+  database: test

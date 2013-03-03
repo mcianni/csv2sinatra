@@ -1,6 +1,9 @@
 require './models/base'
 
 module CSV::Sinatra
+  class NameClashError < StandardError; end
+  class IDClashError   < StandardError; end
+
   class Importer
 
     def initialize(filepath='')
@@ -19,6 +22,15 @@ module CSV::Sinatra
       # Dynamically define a class with an id:Serial column
       # and properties matching the csv file
       class_name = "#{@file}".split("/").last.split(".")[0].split.join("_").capitalize
+
+      # Raise an error if the Class name (generated from the file name)
+      # will clash with an existing class
+      if (Object.const_get(class_name) rescue false)
+        raise NameClashError if Object.const_get(class_name).superclass != DynamicClasses::Base
+      end
+
+      # Generate the class with the properties from the csv file
+      # and migrate the db
       klass = Class.new(DynamicClasses::Base)
       Object.const_set(class_name, klass)
       klass.class_eval("include DataMapper::Resource")
@@ -26,6 +38,7 @@ module CSV::Sinatra
 
       data.each do |col|
         col.gsub!(/ /, '_')
+        raise IDClashError if col == 'id'
         klass.property(col.intern, klass::Text)
       end
       
@@ -34,6 +47,9 @@ module CSV::Sinatra
     end
 
     def add_to_table(data)
+      # Add a column for the autoincrement id and
+      # create a new instance of the class and save it
+      # to the db
       data.unshift(nil)
       data = Hash[@k.properties.map(&:name).zip(data)]
       @k.new(data).save!

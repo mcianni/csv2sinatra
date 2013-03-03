@@ -1,9 +1,9 @@
 ENV['RACK_ENV'] = 'test'
-require File.join(File.dirname(__FILE__), '..', 'app.rb')
-
 require 'sinatra'
 require 'rack/test'
 require 'pry'
+
+require File.join(File.dirname(__FILE__), '..', 'app.rb')
 
 # setup test environment
 set :run, false
