@@ -7,7 +7,7 @@ Usage
 -----
 * `bundle`
 * Copy CSV file(s) to csvs directory
-* Run `rake c2s:import`
+* Run `rake csv:import`
 * Run the sinatra app with `rackup`
 * Visit `localhost:9292` to see the imported tables
 

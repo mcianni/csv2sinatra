@@ -9,7 +9,7 @@ describe 'Tasks' do
       Rake.application = rake
       rake.init
       rake.load_rakefile
-      rake['c2s:import'].invoke('users.csv')
+      rake['csv:import'].invoke('users.csv')
     end
 
     it "should set column names from the first csv line" do
@@ -33,7 +33,7 @@ describe 'Tasks' do
       rake.init
       rake.load_rakefile
 
-      expect { rake['c2s:import'].invoke('bad.csv') }.to raise_error
+      expect { rake['csv:import'].invoke('bad.csv') }.to raise_error
     end
 
     it "should raise an error if the name of the csv would clash with an exisiting class" do
@@ -42,7 +42,7 @@ describe 'Tasks' do
       rake.init
       rake.load_rakefile
 
-      expect { rake['c2s:import'].invoke('fixnum.csv') }.to raise_error      
+      expect { rake['csv:import'].invoke('fixnum.csv') }.to raise_error      
     end
 
   end

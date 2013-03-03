@@ -1,3 +1,4 @@
+require './config/database'
 require './models/base'
 
 module CSV::Sinatra
@@ -54,7 +55,6 @@ module CSV::Sinatra
       data = Hash[@k.properties.map(&:name).zip(data)]
       @k.new(data).save!
 
-      print '.'
     end
 
   end

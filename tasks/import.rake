@@ -1,6 +1,6 @@
 require './lib/csv2sinatra_importer'
 
-namespace :c2s do
+namespace :csv do
   # If a filename is passed to the task
   # only import that file, otherwise
   # import all files in csvs/*.csv
