@@ -3,7 +3,6 @@ require 'data_mapper'
 module DynamicClasses
 
   class Base
-
   end
 
   # Check if there's a table matching the requested const
@@ -15,6 +14,7 @@ module DynamicClasses
                                          AND name not like '%sqlite_%'")
     
     if tables.include?(c.to_s.downcase)
+      # TODO : refactor this
       klass = Class.new(DynamicClasses::Base)
       Object.const_set(c, klass)
       klass.class_eval("include DataMapper::Resource")
@@ -32,15 +32,17 @@ module DynamicClasses
 
   def self.list
     tables = repository(:default).adapter.select("SELECT name FROM sqlite_master\
-                                       WHERE type in ('table', 'view')\
-                                       AND name not like '%sqlite_%'")
+                                                  WHERE type in ('table', 'view')\
+                                                  AND name not like '%sqlite_%'")
     tables.map(&:capitalize)
   end
 
-  def self.load_classes
-    tables = repository(:default).adapter.select("SELECT name FROM sqlite_master\
-                                       WHERE type in ('table', 'view')\
-                                       AND name not like '%sqlite_%'")
+  def self.load_classes(table_name=nil)
+    tables = table_name ? 
+                [table_name] : 
+                repository(:default).adapter.select("SELECT name FROM sqlite_master\
+                                                     WHERE type in ('table', 'view')\
+                                                     AND name not like '%sqlite_%'")
     tables.each do |table|
       klass = Class.new(DynamicClasses::Base)
       Object.const_set(table.capitalize, klass)

@@ -25,6 +25,7 @@ class CSV2Sinatra < Sinatra::Base
     klass    = eval("DynamicClasses::#{params[:table].capitalize}")
     @columns = klass.properties.map{ |p| p.name.to_s }
     @rows    = klass.all.paginate(page: params[:page])
+    @model_name = params[:table].capitalize
     haml :show
   end
 
