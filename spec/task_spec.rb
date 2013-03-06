@@ -23,6 +23,15 @@ describe 'Tasks' do
             'frank grimes : 215-555-1212']
     end
 
+    it "should import csv files with spaces in the file name" do
+      rake = Rake::Application.new
+      Rake.application = rake
+      rake.init
+      rake.load_rakefile
+      rake['csv:import'].invoke('some users.csv')
+      DynamicClasses.list.should include 'SomeUser'
+    end
+
     it "should set an id column if the csv has none" do
       Users.properties.map(&:name).should include(:id)
     end

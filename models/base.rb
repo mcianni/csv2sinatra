@@ -13,13 +13,13 @@ module DynamicClasses
                                          WHERE type in ('table', 'view')\
                                          AND name not like '%sqlite_%'")
     
-    if tables.include?(c.to_s.downcase)
+    if tables.include?(DataMapper::Inflector.tableize(c.to_s))
       # TODO : refactor this
       klass = Class.new(DynamicClasses::Base)
-      Object.const_set(c, klass)
+      Object.const_set(DataMapper::Inflector.classify(c), klass)
       klass.class_eval("include DataMapper::Resource")
 
-      cols = repository(:default).adapter.select("pragma table_info(#{c.to_s.downcase})")
+      cols = repository(:default).adapter.select("pragma table_info(#{DataMapper::Inflector.tableize(c.to_s)})")
       cols.map(&:name).each do |col|
         klass.property(col, col == "id" ? klass::Serial : klass::Text)
       end
@@ -34,7 +34,7 @@ module DynamicClasses
     tables = repository(:default).adapter.select("SELECT name FROM sqlite_master\
                                                   WHERE type in ('table', 'view')\
                                                   AND name not like '%sqlite_%'")
-    tables.map(&:capitalize)
+    tables.map{ |t| DataMapper::Inflector.classify(t) }
   end
 
   def self.load_classes(table_name=nil)
@@ -45,7 +45,7 @@ module DynamicClasses
                                                      AND name not like '%sqlite_%'")
     tables.each do |table|
       klass = Class.new(DynamicClasses::Base)
-      Object.const_set(table.capitalize, klass)
+      Object.const_set(DataMapper::Inflector.classify(table), klass)
       klass.class_eval("include DataMapper::Resource")
 
       cols = repository(:default).adapter.select("pragma table_info(#{table})")

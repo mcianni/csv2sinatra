@@ -22,7 +22,7 @@ module CSV::Sinatra
     def create_table(data)
       # Dynamically define a class with an id:Serial column
       # and properties matching the csv file
-      class_name = "#{@file}".split("/").last.split(".")[0].split.join("_").capitalize
+      class_name = File.basename(@file, '.*').split.map(&:capitalize).join
 
       # Raise an error if the Class name (generated from the file name)
       # will clash with an existing class
