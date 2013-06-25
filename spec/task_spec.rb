@@ -16,6 +16,23 @@ describe 'Tasks' do
       Users.properties.map(&:name).should eq([:id, :first_name, :last_name, :phone_number])
     end
 
+    describe "should import column names with illegal characters" do
+
+      it "successfully" do
+        rake = Rake::Application.new
+        Rake.application = rake
+        rake.init
+        rake.load_rakefile
+        expect { rake['csv:import'].invoke('users_with_illegal_column_names.csv') }.to_not raise_error
+      end
+
+      it "and substitute for the illegal characters" do
+        DynamicClasses.load_classes #make sure new classes are loaded
+        UsersWithIllegalColumnName.properties.map(&:name).should eq([:id, :first_name, :_last_name, :_2phone_number])
+      end
+
+    end
+
     it "should set all data from csv file" do
       Users.all.count.should eq(2)
       Users.all.map{|u| "#{u.first_name} #{u.last_name} : #{u.phone_number}"}.should
@@ -51,9 +68,9 @@ describe 'Tasks' do
       rake.init
       rake.load_rakefile
 
-      expect { rake['csv:import'].invoke('fixnum.csv') }.to raise_error      
+      expect { rake['csv:import'].invoke('fixnum.csv') }.to raise_error
     end
 
   end
-  
+
 end

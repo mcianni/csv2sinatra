@@ -38,11 +38,12 @@ module CSV::Sinatra
       klass.property(:id, klass::Serial)
 
       data.each do |col|
-        col.gsub!(/ /, '_')
+        col.prepend("_") if col =~ /[0-9]/
+        col.gsub!(/[^0-9a-z]/i, '_')
         raise IDClashError if col == 'id'
         klass.property(col.intern, klass::Text)
       end
-      
+
       klass.auto_migrate!
       @k = klass
     end
