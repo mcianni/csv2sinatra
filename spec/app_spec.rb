@@ -1,6 +1,17 @@
 require 'spec_helper'
 
+class User
+  include DataMapper::Resource
+  property :id, Serial
+end
+DataMapper.finalize.auto_upgrade!
+
 describe 'CSV2Sinatra' do
+  after(:all) do
+    adapter = DataMapper.repository(:default).adapter
+    adapter.execute("DROP TABLE #{User.storage_name}")
+  end
+
   describe "the home page" do
     it 'should exist' do
       get '/'
