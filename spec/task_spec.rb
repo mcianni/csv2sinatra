@@ -3,6 +3,10 @@ require 'rake'
 
 describe 'Tasks' do
   describe 'Import' do
+    after(:all) do
+      adapter = DataMapper.repository(:default).adapter
+      adapter.execute("DROP TABLE #{User.storage_name}")
+    end
 
     it "should exist" do
       rake = Rake::Application.new
@@ -51,6 +55,15 @@ describe 'Tasks' do
 
     it "should set an id column if the csv has none" do
       Users.properties.map(&:name).should include(:id)
+    end
+
+    it "should set a column name if the column has none" do
+      rake = Rake::Application.new
+      Rake.application = rake
+      rake.init
+      rake.load_rakefile
+      expect { rake['csv:import'].invoke('users_with_blank_column_name.csv') }.to_not raise_error
+      UsersWithBlankColumnName.properties.map(&:name).should include(:column_0)    
     end
 
     it "should raise an error if the csv has a column named id" do
